@@ -18,7 +18,7 @@ if [ $my_research == 'Bioinformatics' ]; then echo "Dr. Carroll's research area 
 
 #Uses a loop (that was not covered in lecture) to display information to the screen
 #echos the name of your favorite color and stores the stdout in a file named colors.txt
-count = 10
+count=10
 while [ $count -gt 0 ]; do
     echo "$count"
     count=$(( count - 1 ))
