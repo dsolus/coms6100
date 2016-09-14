@@ -26,6 +26,12 @@ while [ $count -gt 0 ]; do
 done
 
 #echos the name of your second favorite color and adds it to the end of the file named colors.txt
-
+echo 'blue' >> colors.txt
 #echos the name of the last color that you learned and adds it to the end of the file name colors.txt
+echo 'Type the last color you learned, followed by [ENTER]:'
+read color
+echo $color >> colors.txt
+
 #Sorts the contents of colors.txt and stores the result in colors-sorted.txt
+sort colors.txt >> colors-sorted.txt
+
