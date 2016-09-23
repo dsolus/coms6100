@@ -1,0 +1,32 @@
+#homework_fortran2.txt
+#Daniel Solus
+
+This file contains the output of homework_fortran2.f90, a brief explanation,
+and the completed rubric.
+
+#Results
+ single precision, forward sum:    15.4036827      (after loop)
+ single precision, backward sum:    18.8079185      (after loop)
+ double precision, forward sum:    21.300481573265063       (after loop)
+ double precision, backward sum:    21.300481567973723       (after loop)
+
+#Explanation of results
+Looking at the numbers for the single precision summations it is clear that the
+backward summation is more precise. I suppose this is to be expected as the 
+summation does not begin with one. However I am not completely sure why this is
+the case. For the double precision calulations the results are nearly identical
+but again the backward summation is slightly different. I assume it is the more
+precise measurement simply based on the results of the single precision
+calculations.
+
+#Rubric
+Points          Item
+---------       ----------------------------
+______/ 4       Fortran code
+______/ 4       Correct output
+______/ 2       Brief explanation
+
+______/10       Total
+
+____4____        Approximate number of hours spent
+
