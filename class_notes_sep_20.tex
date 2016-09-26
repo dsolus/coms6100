@@ -1,8 +1,10 @@
 \documentclass[11pt]{article}
-\usepackage{geometry}
-\geometry{letterpaper}
-\usepackage{amsmath}
-\usepackage{graphicx}
+\usepackage{pdfpages}
+\usepackage{listings}
+\usepackage{xcolor}
+\lstset{language=Fortran,captionpos=b,tabsize=3,frame=single,keywordstyle=
+\color{brown},commentstyle=\color{gray},stringstyle=\color{red},numbers=left,numberstyle=\tiny,numbersep=5pt,breaklines=true,showstringspaces=false,basicstyle=\footnotesize,emph={label}}
+
 
 \title{COMS 6100 Class Notes}
 \author{Daniel Solus}
@@ -11,13 +13,542 @@
 \maketitle
 
 \section{General Remarks}
-\paragraph{} The Lecture notes submitted by the class have been very good. Integer division seemed to be a common oversight when working the Fortran II assignment. However, questions and discussion about the howework assignment will be addressed after everyone has submitted it.\\
+\paragraph{} The Lecture notes submitted by the class have been very good. Integer division seemed to be a common oversight when working the Fortran II assignment. However, questions and discussion about the howework assignment will be addressed after everyone has submitted it.
 
 \section{Fortran: Loops}
 \subsection{Loops Exercise}
 
-\paragraph{} To begin, we reworked the in class coding assignment that ended last lecture. The exercise allows us to practice using loops in fortran. This exercise should be easy now that everyone has worked on the homework assignment.\\
+\paragraph{} To begin, we reworked the in-class coding assignment that ended last lecture. The exercise allowed the class to practice using loops in fortran. This exercise should be easy now that everyone has worked on the homework assignment.
 
-\par There is almost always a cleaner, better, or at least different way to do things. Keep this in mind as you begin to work more complicated problems.\\
+\begin{flushleft}
+\bf Fortran\\
+\bf Loops Exercise
+\end{flushleft}
+
+  Write a simple Fortran program that:
+  \begin{enumerate}
+    \item Prints out all of the numbers between 1 and 100
+    \item Prints out all of the odd numbers between 0 and 100
+  \end{enumerate}
+  % Solution: loops.f90
+  \vfill
+
+%%%%%Minipage(1/2)%%%%%%
+\noindent
+\begin{minipage}[t]{0.45\textwidth}
+\flushleft{\bf class programs}
+\begin{lstlisting}
+program loopsExercise
+implicit none
+integer :: i = 1
+
+!Prints out numbers between 1 and 100
+do i, 100
+	print *, i
+enddo
+
+!initialize i
+do while(i <= 100)
+	print *, i
+	i = i + 1
+enddo
+
+!Prints out all odd numbers between 0 and 100
+do i, 100, 2
+	print *,i
+enddo
+
+do while (i <= 100)
+	if (mod(i,2) = 1) then
+	print *, i
+	i = i + 1
+enddo
+end program loopsExercise
+\end{lstlisting}
+	\end{minipage}
+%%%%%Minipage (2/2)%%%%%
+\hfill
+\begin{minipage}[t]{0.5\textwidth}
+\flushleft{\bf comments}
+\begin{itemize}
+	\item ``Lets redo the fortran loops exercise to get started"
+	\item ``we have done this last time but I may have copied over the .f90 file"
+	\item always start a program with implicit none
+	\item then declare the variables, we want an integer datatype
+	\item ``What are some other ways we could write the same program?"
+	\item Toheeb suggested using a while loop
+	\item remember to initialize i!
+	\item Dr. Carrol completed the second program using the mod() operator and testing for odd integers
+\end{itemize}
+\end{minipage}\\
+
+\paragraph{Summary} There is almost always a cleaner, better, or at least different way to do things. Keep this in mind as you begin to work more complicated problems.
+
+\section{Arrays}
+
+\paragraph{Introduction to Arrays}
+Arrays are common in Fortran code. Using and manipulating arrays is straightforward as long as you understand indexing. It is important to note that Fortran begins indexing arrays with one. This can be the source of some difficulties when translating code from another language. Note: Matlab and Python start with zero index. So does C. \\
+
+\subsection{Array Basics}
+
+ \begin{itemize}
+    \item are an indexed list of variables (floats, characters, etc.)
+    \item can have more than one dimensions (rows and columns)
+    \item in Fortran are in a contiguous blocks of memory
+    \item indexed starting with 1 in Fortran, unless otherwise delcared
+  \end{itemize}
+  
+\subsection{Array Declarations}
+
+\paragraph{}	In Fortran the datatype and the dimensions of the array must be declared. The dimensions of an array are characteristic rows and columns. It is irrelevant which dimension is which. Dr. Carroll used the analogy of having rice and beans, or beans and rice while living in Brazil. Choose rows and columns consistently. The computer doesn't care but being consistent will make your code readable for you and other users. It is possible to declare any dimensions you want, including negative indexes. Dr. Carroll referenced these indices as "ghost cells" as they may be hidden from a user. There is a practical use for these ghost cells but I am not sure I understand the implementation.
+
+\flushleft{\bf Declarations}
+  \begin{itemize}
+  \item
+\begin{verbatim}
+real, dimension(10) :: a
+\end{verbatim}
+    \begin{itemize}
+    \item A  single one-dimensional array of length 10
+    \end{itemize}
+
+  \item
+\begin{verbatim}
+real, dimension(1000) :: b, c
+\end{verbatim}
+    \begin{itemize}
+    \item Two one-dimensional arrays of length 1000
+    \end{itemize}
+
+  \item
+\begin{verbatim}
+real, dimension(-3:17) :: d
+\end{verbatim}
+    \begin{itemize}
+    \item A one dimensional array with a starting index of -3 and and ending index of 17 (you can have ghost cells.)
+    \end{itemize}
+
+  \item
+\begin{verbatim}
+real, dimension(100,200) :: e
+\end{verbatim}
+    \begin{itemize}
+    \item A two dimensional array of size 100 x 200\\
+    "Are these rows or columns?"
+    \end{itemize}
+
+  \item
+\begin{verbatim}
+real, dimension(50,2:41,80) :: f
+\end{verbatim}
+    \begin{itemize}
+    \item A three dimensional array of 50x40x80 with the second dimension starting at index 2 and ending at 41
+    \end{itemize}
+  \end{itemize}
+\paragraph{Question:}``Why would you want negative indices?"
+
+\paragraph{Answer:}	Suppose you write a program to keep track of averages. Also, you want to keep track of the indices for the array but have them hidden. The term is ``cached."
+\vfill
+%%%%%Minipage(1/2)%%%%%%
+\noindent
+\begin{minipage}[t]{0.45\textwidth}
+\bf{Arrays: One Dimension}
+\begin{verbatim}
+Usage Examples
+
+a(1) = 3.4
+a(2) = 7.45e5
+a(3) = -2.32e-2
+...
+a(3) = a(2) + 3.532
+a(3) = a(2) + a(1)
+\end{verbatim}
+	\end{minipage}
+%%%%%Minipage (2/2)%%%%%
+%\hfill
+\begin{minipage}[t]{0.5\textwidth}
+\flushleft{\bf Arrays: Why change the indexing?}
+\begin{itemize}
+	\item Zero indexes are commonly used in C
+	\item Negative indexes can be used as ``ghost cells" in some grids
+	\item It simplifies programing
+\end{itemize}
+\end{minipage}\\
+
+\paragraph {Note:} We can do math and manipulate arrays or indices of arrays just like integers or characters
+
+\paragraph {Note:} Sometimes zero indexing makes sense, sometimes it does not. Trying to integrate code, especially from C to Fortran, we would want to start with zero.\\
+\vfill
+
+\par Two things that go together and are somewhat dependent on each other.
+\begin{itemize}
+	\item rice and beans
+	\item cereal and milk
+	\item day and night
+	\item black and white
+\end{itemize}
+
+\paragraph{Question:} ``So what goes with Arrays?"
+Arrays and Loops go together!
+
+\subsection{Fortran: Arrays}
+%%%%%Minipage(1/2)%%%%%
+\noindent
+\begin{minipage}[t]{0.5\textwidth}
+\begin{lstlisting}
+program arraySimpleExample
+implicit none
+integer :: i
+integer, parameter :: n = 10
+integer, dimension(n) :: results
+
+do i = 1, n
+   print *, results(i)
+enddo
+print*, 'results: ', results
+
+end program arraySimpleExample
+\end{lstlisting}
+  %\vfill
+	\end{minipage}
+%%%%%Minipage (2/2)%%%%%
+\hfill
+\begin{minipage}[t]{0.45\textwidth}
+\paragraph{Question:}``What is this loop going to print out?"\\
+
+The value is not initialized so the program does not know which index to start with.
+\end{minipage}\\
+
+\paragraph{program: array\_test}The array\_test program creates a 3D array of real numbers and calculates the sum of those numbers. Dr. Carroll has written out the steps for each index so the class can visualize the progression of the program. The consecutive do loops help us to identify the dimensions of the array. At the end of the nested do loops we take the sum of the indices.\\
+
+\begin{lstlisting}
+program array_test
+implicit none
+integer, dimension(10) :: i2
+integer, dimension(40,40) :: i3
+
+integer, parameter :: dig =5, ex=30
+integer, parameter :: kk = selected_real_kind(dig, ex)
+integer, parameter :: n = 3, m=5
+real (kind=kk), dimension(n, n, m) :: jj1, jj2, jj3
+
+integer :: i, j, k
+! using loops
+do i = 1, n
+   do j = 1, n
+      do k = 1, m
+         jj1(i,j,k) = i+j+k
+      enddo
+   enddo
+enddo
+print*, 'jj1: ',jj1
+\end{lstlisting}
+\vfill
+
+\paragraph{program array\_test:}	The second half of array\_test takes the same 3D array of real numbers and multiplies every element in the array by seven. Again, we have used the nested do loops to visualize the dimensions of the array. However, this is not nessecary as the last part of the program shows the same function using array notation.\\
+
+\begin{lstlisting}
+! program array_test cont'd
+
+! now multiply every element in the array by 7
+do i = 1, n
+   do j = 1, n
+      do k = 1, m
+         jj2(i,j,k) = jj1(i,j,k)* 7
+      enddo
+   enddo
+enddo
+print*, 'jj2 (with loops): ',jj2
+
+! repeat this in array notation
+jj2 = jj1 * 7
+print*, 'jj2 (array notation):',jj2
+
+end program array_test
+\end{lstlisting}
+
+\paragraph{Note:}``The program runs faster if you don't use three loops."
+\paragraph{Question:}Yiting: ``This is a three dimensional array but the output is only in two dimensions?''
+The output is constricted by the resolution of the monitor (I think?). The right most dimension changes the most. We need to know the dimension in order to reconstruct the array.
+\vfill
+
+\paragraph{program array\_test2}This program creates a 3D array and indexs the elements with strings ``i, j, k" The program then prints out slices of the array using index notation.\\
+
+\begin{lstlisting}
+program array_test2
+implicit none
+integer, parameter :: m=4, n=3, o=2
+integer, dimension( m, n, o) :: a
+integer :: i, j, k, l = 0
+do i = 1, m
+   do j = 1, n
+      do k = 1, o
+         a(i,j,k) = l
+         print*,'a(',i,',',j,',',k,'):',a(i,j,k),'=',l
+         l = l + 1
+      enddo
+   enddo
+enddo
+print*, 'a: ',a
+print*,'a(1:3,1,1): ', a(1:3,1,1) ! low:hi[:stride]
+print*,'a(2:3,1,1): ', a(2:3,1,1) 
+print*,'a(2:,1,1) : ', a(2:,1,1)  
+print*,'a(:,1,1)  : ', a(:,1,1)   
+print*,'a(1,:,1)  : ', a(1,:,1)   
+print*,'a(1,1,:)  : ', a(1,1,:)   
+print*,'a(:,:,1)  : ', a(:,:,1)   
+end program array_test2
+\end{lstlisting}
+
+\paragraph{Note:}``You can take slices of an array (Matlab style)."
+
+\paragraph{Note:}Printing the entire array `a' it is clear the indices match the corresponding iterable variable.
+
+\paragraph{Note:}``The stride of the slice allows you to skip sections so you only see the second or third column or row.
+
+\vfill
+\section{Using Arrays}
+\subsection{A dot product that doesn't use arrays}
+
+\paragraph{program noarray}The program noarray doesn't use any arrays! The program generates random numbers then calculates the dot product and prints the results. General practice when using random numbers is to save the seed until debugging is complete. This practice keeps developers from chasing ``random bugs."\\
+
+\begin{lstlisting}
+program noarray
+implicit none
+real :: a1, a2, a3, a4, a5, a6, a7, a8, a9, a10
+real :: b1, b2, b3, b4, b5, b6, b7, b8, b9, b10
+real :: c
+
+! initialize the data
+call random_seed
+call random_number(a1)
+call random_number(a2)
+call random_number(a3)
+call random_number(a4)
+call random_number(a5)
+call random_number(a6)
+call random_number(a7)
+call random_number(a8)
+call random_number(a9)
+call random_number(a10)
+
+call random_number(b1)
+call random_number(b2)
+call random_number(b3)
+call random_number(b4)
+call random_number(b5)
+call random_number(b6)
+call random_number(b7)
+call random_number(b8)
+call random_number(b9)
+call random_number(b10)
+
+! calculate the dot product
+c = a1*b1 + a2*b2 + a3*b3 + a4*b4 + a5*b5 + a6*b6 + &
+    a7*b7 + a8*b8 + a9*b9 + a10*b10
+
+! print out the results
+print *, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10
+print *, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10
+print*,'Results are: ',c
+
+end program noarray
+\end{lstlisting}
+
+\paragraph{Note:}``Let's talk about dot products!"
+
+\paragraph{Question:}``We should get new random numbers every time we run the program. We ran it but it didn't work, why?"\\
+
+\par ``The random number generator is starting at the top of the random list. The seed is not changing."
+
+\paragraph{Note:}Random numbers - a computer can generate a list of four billion numbers. Then, in order to create a random number, the computer shuffles all four billion and picks one. Then it repeats the process. In this way a list of random numbers are generated. However, seeding in random numbers is very important. The seed number is the number the computer first selects.
+
+\paragraph{Note:}Many programers use the time to seed random number generators, but this is not always reliable.
+\vfill
+
+\subsection{A dot product using arrays and loops}
+%%%%%Minipage(1/2)%%%%%
+\noindent
+\begin{minipage}[t]{0.5\textwidth}
+\begin{lstlisting}
+program array2
+implicit none
+integer, parameter :: n = 10
+real, dimension(n) :: a, b
+integer :: i
+real :: c
+
+! initialize the data
+call random_seed
+do i = 1, n
+   call random_number(a(i))
+   call random_number(b(i))
+enddo
+
+! calculate the dot product
+c = 0.0
+do i = 1, n
+   c = c + a(i) * b(i)
+enddo
+
+! print out the results
+do i = 1, n
+   print*, i, a(i), b(i)
+enddo
+print*,'Results are: ',c
+
+end program array2
+\end{lstlisting}
+	\end{minipage}	
+%%%%%Minipage(2/2)%%%%%
+\hfill
+\begin{minipage}[t]{0.4\textwidth}
+\paragraph{Note:}The built in dot product function gives us the same result as the calculated dot product.\\
+
+\paragraph{Question:} ``If you take the dot product of two vectors but the index is different what will happen?\\
+
+\par``Fortan doesn't like it!" We get an error.\\
+
+\par ``Always check documentation! We can easily look up if something is possible in Fortran."
+\end{minipage}
+
+\section{Input and Output}
+\subsection{Fortran: Reading data}
+\paragraph{Reading data} We begin with the program input. This program creates a three dimensional array using input from the user. The class was introduced to the Fortran prompt which calls for user input for the program. The program then prints out the appropriate variable assignment so the user can check the assignment. Note: The input for multiple elements can be separated by commas or by line breaks for simple numerical lists and free form input.\\
+%%%%%Minipage(1/2)%%%%%
+\noindent
+\begin{minipage}[t]{0.4\textwidth}
+\begin{lstlisting}
+program input
+implicit none
+real :: a,b,i
+real, dimension(3) :: c
+
+print*,"Input a number: "
+read*, i
+print*, 'i: ', i
+print*,"Input two numbers: "
+read*, a,b
+print*, 'a: ', a, 'b: ', b
+print*,"Input three numbers: "
+read *, c(1:3)
+print*, 'c: ', c
+
+endprogram input
+\end{lstlisting}
+	\end{minipage}
+%%%%%Minipage(2/2)%%%%%
+\hfill
+\begin{minipage}[t]{0.5\textwidth}
+\par``Let's play with this code!"
+
+\paragraph{Note:}Integers are real numbers so, 42 -----$>$ 42.00000 (REAL)
+
+\paragraph{Note:}The program can't take character datatypes as real numbers.
+
+\paragraph{Question:}``Can the program handle my bank account with all these commas?"\\
+
+\par``No! So we must be careful when using multiple delimiters."
+\end{minipage}
+
+\subsection{Using arrays: Reading data from an array}
+\paragraph{Reading data}The program array7 creates a two by three dimensional array and fills the rows and columns with integers. The program prints out the contents of the array, as well as the individual columns and rows so that the class can visualize the construction of the array. It was here that Dr. Carroll noticed the array was read-in incorrectly. The program array8 prints out the first six squares.\\
+
+%%%%%Minipage(1/2)%%%%%
+\noindent
+\begin{minipage}[t]{0.45\textwidth}
+\begin{lstlisting}
+program array7
+implicit none
+integer, dimension(2,3) :: a
+
+! Read in the data
+read*, a
+
+! print out the results
+print*,'The whole array: ', a
+print*,'column 1 ', a(:, 1)
+print*,'column 2 ', a(:, 2)
+print*,'column 3 ', a(:, 3)
+print*,'row 1 ', a(1,:)
+print*,'row 2 ', a(2,:)
+end program array7
+\end{lstlisting}
+\vfill
+	\end{minipage}
+%%%%%Minipage(2/2)%%%%%
+\hfill
+\begin{minipage}[t]{0.45\textwidth}
+\paragraph{Note:}``helpful to print output so you can visualize construction"\\
+
+\par The output of array7:\\
+\begin{center}
+\begin{tabular}{ |c|c|c| }
+	\hline
+	1 & 3 & 4\\
+	\hline
+	2 & 3 & 5\\
+	\hline
+\end{tabular}
+\end{center}
+
+\par The array was written-in incorrectly:
+\begin{center}
+\begin{tabular}{ |c|c|c| }
+	\hline
+	1 & 2 & 3\\
+	\hline
+	3 & 4 & 5\\
+	\hline
+\end{tabular}
+\end{center}
+\end{minipage}
+
+\subsection{Unix and Fortran: Combining Redirection and Fortran File IO}
+
+%%%%%Minipage(1/2)%%%%%
+\noindent
+\begin{minipage}[t]{0.45\textwidth}
+\begin{lstlisting}
+program array8
+implicit none
+integer :: i
+
+! printout the first 6 squares
+do i = 1, 6
+   print*, i*i
+enddo
+
+end program array8
+\end{lstlisting}
+	\end{minipage}
+%%%%%Minipage(2/2)%%%%%
+\hfill
+\begin{minipage}[t]{0.45\textwidth}
+
+\paragraph{Note:}``I believe C is newer than Fortran"\\
+
+\paragraph{Note:} ``Fortran prints out the same way it reads in. It doesn't transpose!"\\
+\par Array8: fills in by columns!
+\begin{center}
+\begin{tabular}{ |c|c|c| }
+	\hline
+	1 & 9 & 25\\
+	\hline
+	4 & 16 & 36\\
+	\hline
+\end{tabular}
+\end{center}
+
+
+\end{minipage}
+
+\begin{verbatim}
+#make an array
+gfortran array8.f90 -o array8
+./array8
+./array 8 $> $array8.out
+cat array8.out
+\end{verbatim}
 
 \end{document}
